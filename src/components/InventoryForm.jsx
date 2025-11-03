@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
 
 const InventoryForm = ({ items, setItems }) => {
-  const predefinedCategories = ['Shirts', 'Pants', 'Shoes', 'Hats', 'Accessories']
-  const predefinedBrands = ['Nike', 'Adidas', 'Puma', 'Reebok', 'Other']
+  const [categories, setCategories] = useState(['Shirts', 'Pants', 'Shoes', 'Hats', 'Accessories'])
+  const [brands, setBrands] = useState(['Nike', 'Adidas', 'Puma', 'Reebok'])
 
-  const [category, setCategory] = useState(predefinedCategories[0])
-  const [brand, setBrand] = useState(predefinedBrands[0])
+  const [category, setCategory] = useState('')
+  const [brand, setBrand] = useState('')
   const [customCategory, setCustomCategory] = useState('')
   const [customBrand, setCustomBrand] = useState('')
-  const [size, setSize] = useState('')
-  const [cost, setCost] = useState(0)
+  const [description, setDescription] = useState('')
   const [inventory, setInventory] = useState(1)
   const [sold, setSold] = useState(false)
   const [photos, setPhotos] = useState([])
@@ -24,12 +23,11 @@ const InventoryForm = ({ items, setItems }) => {
   }
 
   const resetForm = () => {
-    setCategory(predefinedCategories[0])
-    setBrand(predefinedBrands[0])
+    setCategory('')
+    setBrand('')
     setCustomCategory('')
     setCustomBrand('')
-    setSize('')
-    setCost(0)
+    setDescription('')
     setInventory(1)
     setSold(false)
     setPhotos([])
@@ -37,11 +35,23 @@ const InventoryForm = ({ items, setItems }) => {
 
   const addItem = e => {
     e.preventDefault()
-    const finalCategory = category === 'Other' ? customCategory : category
-    const finalBrand = brand === 'Other' ? customBrand : brand
-    if (!finalCategory) return
-    const id = Date.now() // unique inventory number
-    const newItem = { id, category: finalCategory, brand: finalBrand, size, cost, inventory, sold, photos }
+    let finalCategory = category
+    let finalBrand = brand
+
+    if (category === 'Add New Category') {
+      if (!customCategory) return
+      finalCategory = customCategory
+      if (!categories.includes(customCategory)) setCategories([...categories, customCategory])
+    }
+
+    if (brand === 'Add New Brand') {
+      if (!customBrand) return
+      finalBrand = customBrand
+      if (!brands.includes(customBrand)) setBrands([...brands, customBrand])
+    }
+
+    const id = Date.now()
+    const newItem = { id, category: finalCategory, brand: finalBrand, description, inventory, sold, photos }
     setItems([...items, newItem])
     resetForm()
   }
@@ -51,23 +61,28 @@ const InventoryForm = ({ items, setItems }) => {
       <div>
         <label>Category:</label>
         <select value={category} onChange={e => setCategory(e.target.value)} className="border p-2 w-full">
-          {predefinedCategories.map(c => <option key={c} value={c}>{c}</option>)}
-          <option value="Other">Other</option>
+          <option value="">Select category</option>
+          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+          <option value="Add New Category">Add New Category</option>
         </select>
-        {category === 'Other' && <input className="border p-2 mt-1 w-full" placeholder="Custom Category" value={customCategory} onChange={e => setCustomCategory(e.target.value)} />}
+        {category === 'Add New Category' && <input className="border p-2 mt-1 w-full" placeholder="New Category" value={customCategory} onChange={e => setCustomCategory(e.target.value)} />}
       </div>
 
       <div>
         <label>Brand:</label>
         <select value={brand} onChange={e => setBrand(e.target.value)} className="border p-2 w-full">
-          {predefinedBrands.map(b => <option key={b} value={b}>{b}</option>)}
-          <option value="Other">Other</option>
+          <option value="">Select brand</option>
+          {brands.map(b => <option key={b} value={b}>{b}</option>)}
+          <option value="Add New Brand">Add New Brand</option>
         </select>
-        {brand === 'Other' && <input className="border p-2 mt-1 w-full" placeholder="Custom Brand" value={customBrand} onChange={e => setCustomBrand(e.target.value)} />}
+        {brand === 'Add New Brand' && <input className="border p-2 mt-1 w-full" placeholder="New Brand" value={customBrand} onChange={e => setCustomBrand(e.target.value)} />}
       </div>
 
-      <input className="border p-2" placeholder="Size" value={size} onChange={e => setSize(e.target.value)} />
-      <input type="number" className="border p-2" placeholder="Cost" value={cost} onChange={e => setCost(Number(e.target.value))} />
+      <div className="col-span-2">
+        <label>Description:</label>
+        <input type="text" className="border p-2 w-full" placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
+      </div>
+
       <input type="number" className="border p-2" placeholder="Items" value={inventory} onChange={e => setInventory(Number(e.target.value))} />
 
       <label className="flex items-center gap-2">
@@ -76,6 +91,7 @@ const InventoryForm = ({ items, setItems }) => {
       </label>
 
       <input type="file" multiple onChange={handlePhotoUpload} />
+
       <button type="submit" className="bg-blue-500 text-white p-2 col-span-2">Add Item</button>
     </form>
   )
