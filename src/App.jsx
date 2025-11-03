@@ -24,6 +24,14 @@ const App = () => {
         Ecommerce Inventory System
       </h1>
 
+      {/* Add Item Form */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-3 text-center md:text-left">
+          Add New Inventory Item
+        </h2>
+        <InventoryForm items={items} setItems={setItems} />
+      </div>
+
       {/* Dashboard */}
       <Dashboard items={items} />
 
@@ -43,15 +51,9 @@ const App = () => {
         <PrintTags items={itemsToPrint} showPhotos={false} />
       </div>
 
-      {/* Main layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Inventory form */}
-        <InventoryForm items={items} setItems={setItems} />
-
-        {/* Inventory table */}
-        <div className="overflow-x-auto">
-          <InventoryList items={items} setItems={setItems} />
-        </div>
+      {/* Inventory Table */}
+      <div className="overflow-x-auto">
+        <InventoryList items={items} setItems={setItems} />
       </div>
     </div>
   )
