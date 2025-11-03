@@ -36,7 +36,7 @@ const App = () => {
           />{' '}
           Print Sold Items Only
         </label>
-        <PrintTags items={itemsToPrint} />
+        <PrintTags items={itemsToPrint} showPhotos={false} />
       </div>
 
       {/* Inventory form */}
