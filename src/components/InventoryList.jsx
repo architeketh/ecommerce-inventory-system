@@ -27,7 +27,8 @@ const InventoryList = ({ items, setItems }) => {
   }
 
   const removeItem = id => setItems(items.filter(item => item.id !== id))
-  const toggleForSale = id => setItems(items.map(item => item.id === id ? { ...item, forSale: !item.forSale } : item))
+  const toggleItems = id => setItems(items.map(item => item.id === id ? { ...item, forSale: !item.forSale } : item))
+  const toggleSold = id => setItems(items.map(item => item.id === id ? { ...item, sold: !item.sold } : item))
 
   return (
     <div className="overflow-x-auto">
@@ -39,8 +40,8 @@ const InventoryList = ({ items, setItems }) => {
             <th className="border p-2">Size</th>
             <th className="border p-2">Cost</th>
             <th className="border p-2">Inventory</th>
+            <th className="border p-2">Items</th>
             <th className="border p-2">Sold</th>
-            <th className="border p-2">For Sale</th>
             <th className="border p-2">Photos</th>
             <th className="border p-2">Barcode</th>
             <th className="border p-2">Actions</th>
@@ -56,17 +57,15 @@ const InventoryList = ({ items, setItems }) => {
                   <td className="border p-2"><input value={editData.size} onChange={e => setEditData({...editData, size:e.target.value})} /></td>
                   <td className="border p-2"><input type="number" value={editData.cost} onChange={e => setEditData({...editData, cost:Number(e.target.value)})} /></td>
                   <td className="border p-2"><input type="number" value={editData.inventory} onChange={e => setEditData({...editData, inventory:Number(e.target.value)})} /></td>
-                  <td className="border p-2"><input type="number" value={editData.sold} onChange={e => setEditData({...editData, sold:Number(e.target.value)})} /></td>
                   <td className="border p-2"><input type="checkbox" checked={editData.forSale} onChange={e => setEditData({...editData, forSale:e.target.checked})} /></td>
+                  <td className="border p-2"><input type="checkbox" checked={editData.sold} onChange={e => setEditData({...editData, sold:e.target.checked})} /></td>
                   <td className="border p-2">
                     <input type="file" multiple onChange={handlePhotoUpload} />
                     <div className="flex gap-1 mt-1">
                       {editData.photos?.map((p,i)=><img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}
                     </div>
                   </td>
-                  <td className="border p-2">
-                    <svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg>
-                  </td>
+                  <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg></td>
                   <td className="border p-2 flex gap-1">
                     <button className="bg-green-500 text-white px-2" onClick={() => saveEdit(item.id)}>Save</button>
                     <button className="bg-gray-500 text-white px-2" onClick={cancelEdit}>Cancel</button>
@@ -79,8 +78,8 @@ const InventoryList = ({ items, setItems }) => {
                   <td className="border p-2">{item.size}</td>
                   <td className="border p-2">${item.cost}</td>
                   <td className="border p-2">{item.inventory}</td>
-                  <td className="border p-2">{item.sold}</td>
-                  <td className="border p-2"><input type="checkbox" checked={item.forSale} onChange={() => toggleForSale(item.id)} /></td>
+                  <td className="border p-2"><input type="checkbox" checked={item.forSale} onChange={() => toggleItems(item.id)} /></td>
+                  <td className="border p-2"><input type="checkbox" checked={item.sold} onChange={() => toggleSold(item.id)} /></td>
                   <td className="border p-2 flex gap-1">{item.photos?.map((p,i)=><img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}</td>
                   <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg></td>
                   <td className="border p-2 flex gap-1">
