@@ -2,5 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  @apply bg-gray-50 text-gray-800;
+}
 
-html, body, #root { height: 100%; }
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1400px;
+  }
+}
