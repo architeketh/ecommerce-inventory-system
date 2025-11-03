@@ -17,15 +17,6 @@ const InventoryList = ({ items, setItems }) => {
 
   const cancelEdit = () => setEditId(null)
 
-  const handlePhotoUpload = e => {
-    const files = Array.from(e.target.files)
-    files.forEach(file => {
-      const reader = new FileReader()
-      reader.onload = () => setEditData(prev => ({ ...prev, photos: [...prev.photos, reader.result] }))
-      reader.readAsDataURL(file)
-    })
-  }
-
   const removeItem = id => setItems(items.filter(item => item.id !== id))
 
   const toggleSold = id => setItems(items.map(item => item.id === id ? { ...item, sold: !item.sold } : item))
@@ -43,9 +34,10 @@ const InventoryList = ({ items, setItems }) => {
             <th className="border p-2">Category</th>
             <th className="border p-2">Brand</th>
             <th className="border p-2">Description</th>
+            <th className="border p-2">Price</th>
             <th className="border p-2">Items</th>
             <th className="border p-2">Sold</th>
-            <th className="border p-2">Photos</th>
+            <th className="border p-2">Image</th>
             <th className="border p-2">Barcode</th>
             <th className="border p-2">Actions</th>
           </tr>
@@ -58,13 +50,11 @@ const InventoryList = ({ items, setItems }) => {
                   <td className="border p-2"><input value={editData.category} onChange={e => setEditData({ ...editData, category: e.target.value })} /></td>
                   <td className="border p-2"><input value={editData.brand} onChange={e => setEditData({ ...editData, brand: e.target.value })} /></td>
                   <td className="border p-2"><input value={editData.description} onChange={e => setEditData({ ...editData, description: e.target.value })} /></td>
+                  <td className="border p-2"><input type="number" value={editData.cost} onChange={e => setEditData({ ...editData, cost: Number(e.target.value) })} /></td>
                   <td className="border p-2"><input type="number" value={editData.inventory} onChange={e => setEditData({ ...editData, inventory: Number(e.target.value) })} /></td>
                   <td className="border p-2"><input type="checkbox" checked={editData.sold} onChange={e => setEditData({ ...editData, sold: e.target.checked })} /></td>
                   <td className="border p-2">
-                    <input type="file" multiple onChange={handlePhotoUpload} />
-                    <div className="flex gap-1 mt-1">
-                      {editData.photos?.map((p, i) => <img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}
-                    </div>
+                    {editData.photos?.length > 0 && <a href={editData.photos[0]} target="_blank" rel="noopener noreferrer">View Image</a>}
                   </td>
                   <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), { format: "CODE128", width: 2, height: 40 })}></svg></td>
                   <td className="border p-2 flex gap-1">
@@ -77,9 +67,12 @@ const InventoryList = ({ items, setItems }) => {
                   <td className="border p-2">{item.category}</td>
                   <td className="border p-2">{item.brand}</td>
                   <td className="border p-2">{item.description}</td>
+                  <td className="border p-2">${item.cost}</td>
                   <td className="border p-2">{item.inventory}</td>
                   <td className="border p-2"><input type="checkbox" checked={item.sold} onChange={() => toggleSold(item.id)} /></td>
-                  <td className="border p-2 flex gap-1">{item.photos?.map((p, i) => <img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}</td>
+                  <td className="border p-2">
+                    {item.photos?.length > 0 && <a href={item.photos[0]} target="_blank" rel="noopener noreferrer">View Image</a>}
+                  </td>
                   <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), { format: "CODE128", width: 2, height: 40 })}></svg></td>
                   <td className="border p-2 flex gap-1">
                     <button className="bg-yellow-500 text-white px-2" onClick={() => startEdit(item)}>Edit</button>
