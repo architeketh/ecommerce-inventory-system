@@ -1,67 +1,82 @@
 import React, { useState } from 'react'
 
 const InventoryForm = ({ items, setItems }) => {
-  const [formData, setFormData] = useState({
-    category: '',
-    brand: '',
-    description: '',
-    price: 0,
-    quantity: 0,
-    quantitySold: 0
-  })
+  const [category, setCategory] = useState('')
+  const [brand, setBrand] = useState('')
+  const [description, setDescription] = useState('')
+  const [price, setPrice] = useState('')
+  const [image, setImage] = useState('')
 
-  const addItem = () => {
-    const newItem = { ...formData, id: items.length + 1 }
+  const handleSubmit = e => {
+    e.preventDefault()
+    if (!category || !brand || !description || !price) return alert('All fields required.')
+
+    const newItem = {
+      id: Date.now(),
+      category,
+      brand,
+      description,
+      price: parseFloat(price),
+      sold: false,
+      image
+    }
+
     setItems([...items, newItem])
-    setFormData({
-      category: '',
-      brand: '',
-      description: '',
-      price: 0,
-      quantity: 0,
-      quantitySold: 0
-    })
+    setCategory('')
+    setBrand('')
+    setDescription('')
+    setPrice('')
+    setImage('')
   }
 
   return (
-    <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-wrap gap-3 bg-gray-50 p-4 rounded-lg shadow-md justify-center md:justify-start"
+    >
       <input
-        placeholder="Category"
-        value={formData.category}
-        onChange={e => setFormData({ ...formData, category: e.target.value })}
+        type="text"
+        value={category}
+        onChange={e => setCategory(e.target.value)}
+        placeholder="Add new category"
+        className="border p-2 rounded w-40"
       />
       <input
-        placeholder="Brand"
-        value={formData.brand}
-        onChange={e => setFormData({ ...formData, brand: e.target.value })}
+        type="text"
+        value={brand}
+        onChange={e => setBrand(e.target.value)}
+        placeholder="Add new brand"
+        className="border p-2 rounded w-40"
       />
       <input
+        type="text"
+        value={description}
+        onChange={e => setDescription(e.target.value)}
         placeholder="Description"
-        value={formData.description}
-        onChange={e => setFormData({ ...formData, description: e.target.value })}
+        className="border p-2 rounded w-60"
       />
       <input
         type="number"
+        step="0.01"
+        value={price}
+        onChange={e => setPrice(e.target.value)}
         placeholder="Price"
-        value={formData.price}
-        onChange={e => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+        className="border p-2 rounded w-32"
       />
       <input
-        type="number"
-        placeholder="Quantity"
-        value={formData.quantity}
-        onChange={e => setFormData({ ...formData, quantity: parseInt(e.target.value) })}
+        type="text"
+        value={image}
+        onChange={e => setImage(e.target.value)}
+        placeholder="Image URL (optional)"
+        className="border p-2 rounded w-60"
       />
-      <input
-        type="number"
-        placeholder="Quantity Sold"
-        value={formData.quantitySold}
-        onChange={e => setFormData({ ...formData, quantitySold: parseInt(e.target.value) })}
-      />
-      <button onClick={addItem} className="bg-blue-500 text-white px-3 py-1 rounded">
+      <button
+        type="submit"
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+      >
         Add Item
       </button>
-    </div>
+    </form>
   )
 }
 
