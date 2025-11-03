@@ -10,28 +10,36 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Step 2: Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
+      # Step 3: Install dependencies (npm install works even without lock file)
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "Lock file found, running npm ci"
+            npm ci
+          else
+            echo "No lock file found, running npm install"
+            npm install
+          fi
 
+      # Step 4: Build the project
       - name: Build project
         run: npm run build
 
+      # Step 5: Upload build artifact for GitHub Pages
       - name: Upload production build
         uses: actions/upload-pages-artifact@v3
         with:
@@ -39,10 +47,9 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-and-deploy
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
