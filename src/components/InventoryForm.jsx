@@ -11,8 +11,8 @@ const InventoryForm = ({ items, setItems }) => {
   const [size, setSize] = useState('')
   const [cost, setCost] = useState(0)
   const [inventory, setInventory] = useState(1)
-  const [forSale, setForSale] = useState(true)
-  const [sold, setSold] = useState(0)
+  const [forSale, setForSale] = useState(true) // Now Items checkbox
+  const [sold, setSold] = useState(false)
   const [photos, setPhotos] = useState([])
 
   const handlePhotoUpload = e => {
@@ -33,7 +33,7 @@ const InventoryForm = ({ items, setItems }) => {
     setCost(0)
     setInventory(1)
     setForSale(true)
-    setSold(0)
+    setSold(false)
     setPhotos([])
   }
 
@@ -71,11 +71,17 @@ const InventoryForm = ({ items, setItems }) => {
       <input className="border p-2" placeholder="Size" value={size} onChange={e => setSize(e.target.value)} />
       <input type="number" className="border p-2" placeholder="Cost" value={cost} onChange={e => setCost(Number(e.target.value))} />
       <input type="number" className="border p-2" placeholder="Inventory" value={inventory} onChange={e => setInventory(Number(e.target.value))} />
-      <input type="number" className="border p-2" placeholder="Sold" value={sold} onChange={e => setSold(Number(e.target.value))} />
+
       <label className="flex items-center gap-2">
         <input type="checkbox" checked={forSale} onChange={e => setForSale(e.target.checked)} />
-        For Sale
+        Items
       </label>
+
+      <label className="flex items-center gap-2">
+        <input type="checkbox" checked={sold} onChange={e => setSold(e.target.checked)} />
+        Sold
+      </label>
+
       <input type="file" multiple onChange={handlePhotoUpload} />
       <button type="submit" className="bg-blue-500 text-white p-2 col-span-2">Add Item</button>
     </form>
