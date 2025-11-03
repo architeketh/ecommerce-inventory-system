@@ -19,7 +19,7 @@ const App = () => {
   const itemsToPrint = showSoldOnly ? items.filter(i => i.sold) : items
 
   return (
-    <div className="px-4 py-6 w-full max-w-[1400px] mx-auto">
+    <div className="px-4 py-6 w-full max-w-[1600px] mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center">
         Ecommerce Inventory System
       </h1>
@@ -52,7 +52,7 @@ const App = () => {
       </div>
 
       {/* Inventory Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-visible">
         <InventoryList items={items} setItems={setItems} />
       </div>
     </div>
