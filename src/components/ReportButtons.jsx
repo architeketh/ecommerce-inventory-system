@@ -1,5 +1,4 @@
 import React from 'react'
-import { saveAs } from 'file-saver'
 
 const ReportButtons = ({ items }) => {
   const generateCSVReport = () => {
@@ -23,8 +22,16 @@ const ReportButtons = ({ items }) => {
       csv += `${category},${inventoryTotals[category]},${soldTotals[category] || 0}\n`
     })
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    saveAs(blob, 'inventory_report.csv')
+    // Create blob and download link
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'inventory_report.csv'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   return (
