@@ -27,9 +27,15 @@ jobs:
           node-version: 18
           cache: npm
 
-      - name: Install dependencies
-        run: npm install
-
+      - name: Install dependencies smartly
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "Lock file found, running npm ci"
+            npm ci
+          else
+            echo "No lock file, running npm install"
+            npm install
+          fi
 
       - name: Build project
         run: npm run build
