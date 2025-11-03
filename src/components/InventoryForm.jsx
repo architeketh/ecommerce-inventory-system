@@ -11,7 +11,6 @@ const InventoryForm = ({ items, setItems }) => {
   const [size, setSize] = useState('')
   const [cost, setCost] = useState(0)
   const [inventory, setInventory] = useState(1)
-  const [forSale, setForSale] = useState(true) // Now Items checkbox
   const [sold, setSold] = useState(false)
   const [photos, setPhotos] = useState([])
 
@@ -32,7 +31,6 @@ const InventoryForm = ({ items, setItems }) => {
     setSize('')
     setCost(0)
     setInventory(1)
-    setForSale(true)
     setSold(false)
     setPhotos([])
   }
@@ -42,8 +40,8 @@ const InventoryForm = ({ items, setItems }) => {
     const finalCategory = category === 'Other' ? customCategory : category
     const finalBrand = brand === 'Other' ? customBrand : brand
     if (!finalCategory) return
-    const id = Date.now()
-    const newItem = { id, category: finalCategory, brand: finalBrand, size, cost, inventory, forSale, sold, photos }
+    const id = Date.now() // unique inventory number
+    const newItem = { id, category: finalCategory, brand: finalBrand, size, cost, inventory, sold, photos }
     setItems([...items, newItem])
     resetForm()
   }
@@ -70,12 +68,7 @@ const InventoryForm = ({ items, setItems }) => {
 
       <input className="border p-2" placeholder="Size" value={size} onChange={e => setSize(e.target.value)} />
       <input type="number" className="border p-2" placeholder="Cost" value={cost} onChange={e => setCost(Number(e.target.value))} />
-      <input type="number" className="border p-2" placeholder="Inventory" value={inventory} onChange={e => setInventory(Number(e.target.value))} />
-
-      <label className="flex items-center gap-2">
-        <input type="checkbox" checked={forSale} onChange={e => setForSale(e.target.checked)} />
-        Items
-      </label>
+      <input type="number" className="border p-2" placeholder="Items" value={inventory} onChange={e => setInventory(Number(e.target.value))} />
 
       <label className="flex items-center gap-2">
         <input type="checkbox" checked={sold} onChange={e => setSold(e.target.checked)} />
