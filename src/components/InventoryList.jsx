@@ -80,15 +80,9 @@ const InventoryList = ({ items, setItems }) => {
                   <td className="border p-2">${item.cost}</td>
                   <td className="border p-2">{item.inventory}</td>
                   <td className="border p-2">{item.sold}</td>
-                  <td className="border p-2">
-                    <input type="checkbox" checked={item.forSale} onChange={() => toggleForSale(item.id)} />
-                  </td>
-                  <td className="border p-2 flex gap-1">
-                    {item.photos?.map((p,i)=><img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}
-                  </td>
-                  <td className="border p-2">
-                    <svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg>
-                  </td>
+                  <td className="border p-2"><input type="checkbox" checked={item.forSale} onChange={() => toggleForSale(item.id)} /></td>
+                  <td className="border p-2 flex gap-1">{item.photos?.map((p,i)=><img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}</td>
+                  <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg></td>
                   <td className="border p-2 flex gap-1">
                     <button className="bg-yellow-500 text-white px-2" onClick={()=>startEdit(item)}>Edit</button>
                     <button className="bg-red-500 text-white px-2" onClick={()=>removeItem(item.id)}>Delete</button>
