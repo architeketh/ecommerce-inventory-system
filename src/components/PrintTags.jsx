@@ -1,46 +1,37 @@
-import React, { useRef } from 'react'
-import JsBarcode from 'jsbarcode'
+import React from 'react'
 
-const PrintTags = ({ items, showPhotos = true }) => {
-  const printRef = useRef()
-
-  const handlePrint = () => {
-    const printContents = printRef.current.innerHTML
-    const win = window.open('', '', 'width=800,height=600')
-    win.document.write(`
-      <html>
-        <head>
-          <title>Print Inventory Tags</title>
-          <style>
-            body { font-family: Arial, sans-serif; }
-            .tag { border: 1px solid #000; padding: 8px; margin: 4px; display: inline-block; width: 180px; }
-            img { width: 100%; height: 100px; object-fit: cover; margin-bottom: 4px; }
-            svg { width: 100%; height: 50px; }
-          </style>
-        </head>
-        <body>${printContents}</body>
-      </html>
-    `)
-    win.document.close()
-    win.focus()
-    win.print()
-    win.close()
-  }
+const PrintTags = ({ items, showPhotos = false }) => {
+  if (!items || items.length === 0) return null
 
   return (
-    <div className="mb-4">
-      <button onClick={handlePrint} className="bg-purple-500 text-white p-2">Print Tags</button>
-      <div ref={printRef} style={{ display: 'none' }}>
-        {items.map(item => (
-          <div className="tag" key={item.id}>
-            <div>Category: {item.category}</div>
-            <div>Brand: {item.brand}</div>
-            <div>Cost: ${item.cost}</div>
-            {showPhotos && item.photos?.[0] && <img src={item.photos[0]} alt="item" />}
-            <svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg>
+    <div className="flex flex-wrap gap-4 mt-4 justify-center">
+      {items.map(item => (
+        <div
+          key={item.id}
+          className="border p-3 w-48 text-center rounded shadow"
+        >
+          {/* Barcode with prefix */}
+          <div className="font-mono text-sm mb-1">{`abc_isfor_xyz${item.id}`}</div>
+
+          {/* Item details */}
+          <div className="text-sm font-semibold">{item.description}</div>
+          <div className="text-xs text-gray-600">
+            Category: {item.category} | Brand: {item.brand}
           </div>
-        ))}
-      </div>
+          <div className="text-xs">
+            Price: ${item.price} | Qty: {item.quantity} | Sold: {item.quantitySold}
+          </div>
+
+          {/* Optional image */}
+          {showPhotos && item.image && (
+            <img
+              src={item.image}
+              alt={item.description}
+              className="mt-2 w-full h-24 object-cover rounded"
+            />
+          )}
+        </div>
+      ))}
     </div>
   )
 }
