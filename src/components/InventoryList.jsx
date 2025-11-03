@@ -42,8 +42,7 @@ const InventoryList = ({ items, setItems }) => {
           <tr className="bg-gray-200">
             <th className="border p-2">Category</th>
             <th className="border p-2">Brand</th>
-            <th className="border p-2">Size</th>
-            <th className="border p-2">Cost</th>
+            <th className="border p-2">Description</th>
             <th className="border p-2">Items</th>
             <th className="border p-2">Sold</th>
             <th className="border p-2">Photos</th>
@@ -56,19 +55,18 @@ const InventoryList = ({ items, setItems }) => {
             <tr key={item.id}>
               {editId === item.id ? (
                 <>
-                  <td className="border p-2"><input value={editData.category} onChange={e => setEditData({...editData, category:e.target.value})} /></td>
-                  <td className="border p-2"><input value={editData.brand} onChange={e => setEditData({...editData, brand:e.target.value})} /></td>
-                  <td className="border p-2"><input value={editData.size} onChange={e => setEditData({...editData, size:e.target.value})} /></td>
-                  <td className="border p-2"><input type="number" value={editData.cost} onChange={e => setEditData({...editData, cost:Number(e.target.value)})} /></td>
-                  <td className="border p-2"><input type="number" value={editData.inventory} onChange={e => setEditData({...editData, inventory:Number(e.target.value)})} /></td>
-                  <td className="border p-2"><input type="checkbox" checked={editData.sold} onChange={e => setEditData({...editData, sold:e.target.checked})} /></td>
+                  <td className="border p-2"><input value={editData.category} onChange={e => setEditData({ ...editData, category: e.target.value })} /></td>
+                  <td className="border p-2"><input value={editData.brand} onChange={e => setEditData({ ...editData, brand: e.target.value })} /></td>
+                  <td className="border p-2"><input value={editData.description} onChange={e => setEditData({ ...editData, description: e.target.value })} /></td>
+                  <td className="border p-2"><input type="number" value={editData.inventory} onChange={e => setEditData({ ...editData, inventory: Number(e.target.value) })} /></td>
+                  <td className="border p-2"><input type="checkbox" checked={editData.sold} onChange={e => setEditData({ ...editData, sold: e.target.checked })} /></td>
                   <td className="border p-2">
                     <input type="file" multiple onChange={handlePhotoUpload} />
                     <div className="flex gap-1 mt-1">
-                      {editData.photos?.map((p,i)=><img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}
+                      {editData.photos?.map((p, i) => <img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}
                     </div>
                   </td>
-                  <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg></td>
+                  <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), { format: "CODE128", width: 2, height: 40 })}></svg></td>
                   <td className="border p-2 flex gap-1">
                     <button className="bg-green-500 text-white px-2" onClick={() => saveEdit(item.id)}>Save</button>
                     <button className="bg-gray-500 text-white px-2" onClick={cancelEdit}>Cancel</button>
@@ -78,16 +76,15 @@ const InventoryList = ({ items, setItems }) => {
                 <>
                   <td className="border p-2">{item.category}</td>
                   <td className="border p-2">{item.brand}</td>
-                  <td className="border p-2">{item.size}</td>
-                  <td className="border p-2">${item.cost}</td>
+                  <td className="border p-2">{item.description}</td>
                   <td className="border p-2">{item.inventory}</td>
                   <td className="border p-2"><input type="checkbox" checked={item.sold} onChange={() => toggleSold(item.id)} /></td>
-                  <td className="border p-2 flex gap-1">{item.photos?.map((p,i)=><img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}</td>
-                  <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg></td>
+                  <td className="border p-2 flex gap-1">{item.photos?.map((p, i) => <img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}</td>
+                  <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), { format: "CODE128", width: 2, height: 40 })}></svg></td>
                   <td className="border p-2 flex gap-1">
-                    <button className="bg-yellow-500 text-white px-2" onClick={()=>startEdit(item)}>Edit</button>
-                    <button className="bg-green-600 text-white px-2" onClick={()=>duplicateItem(item)}>Duplicate</button>
-                    <button className="bg-red-500 text-white px-2" onClick={()=>removeItem(item.id)}>Delete</button>
+                    <button className="bg-yellow-500 text-white px-2" onClick={() => startEdit(item)}>Edit</button>
+                    <button className="bg-green-600 text-white px-2" onClick={() => duplicateItem(item)}>Duplicate</button>
+                    <button className="bg-red-500 text-white px-2" onClick={() => removeItem(item.id)}>Delete</button>
                   </td>
                 </>
               )}
