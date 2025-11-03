@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
 
 const InventoryForm = ({ items, setItems }) => {
-  const [category, setCategory] = useState('')
-  const [brand, setBrand] = useState('')
+  const predefinedCategories = ['Shirts', 'Pants', 'Shoes', 'Hats', 'Accessories']
+  const predefinedBrands = ['Nike', 'Adidas', 'Puma', 'Reebok', 'Other']
+
+  const [category, setCategory] = useState(predefinedCategories[0])
+  const [brand, setBrand] = useState(predefinedBrands[0])
+  const [customCategory, setCustomCategory] = useState('')
+  const [customBrand, setCustomBrand] = useState('')
   const [size, setSize] = useState('')
   const [cost, setCost] = useState(0)
   const [inventory, setInventory] = useState(1)
@@ -20,8 +25,10 @@ const InventoryForm = ({ items, setItems }) => {
   }
 
   const resetForm = () => {
-    setCategory('')
-    setBrand('')
+    setCategory(predefinedCategories[0])
+    setBrand(predefinedBrands[0])
+    setCustomCategory('')
+    setCustomBrand('')
     setSize('')
     setCost(0)
     setInventory(1)
@@ -32,27 +39,35 @@ const InventoryForm = ({ items, setItems }) => {
 
   const addItem = e => {
     e.preventDefault()
-    if (!category) return
+    const finalCategory = category === 'Other' ? customCategory : category
+    const finalBrand = brand === 'Other' ? customBrand : brand
+    if (!finalCategory) return
     const id = Date.now()
-    const newItem = {
-      id,
-      category,
-      brand,
-      size,
-      cost,
-      inventory,
-      forSale,
-      sold,
-      photos
-    }
+    const newItem = { id, category: finalCategory, brand: finalBrand, size, cost, inventory, forSale, sold, photos }
     setItems([...items, newItem])
     resetForm()
   }
 
   return (
     <form onSubmit={addItem} className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-2">
-      <input className="border p-2" placeholder="Category" value={category} onChange={e => setCategory(e.target.value)} />
-      <input className="border p-2" placeholder="Brand" value={brand} onChange={e => setBrand(e.target.value)} />
+      <div>
+        <label>Category:</label>
+        <select value={category} onChange={e => setCategory(e.target.value)} className="border p-2 w-full">
+          {predefinedCategories.map(c => <option key={c} value={c}>{c}</option>)}
+          <option value="Other">Other</option>
+        </select>
+        {category === 'Other' && <input className="border p-2 mt-1 w-full" placeholder="Custom Category" value={customCategory} onChange={e => setCustomCategory(e.target.value)} />}
+      </div>
+
+      <div>
+        <label>Brand:</label>
+        <select value={brand} onChange={e => setBrand(e.target.value)} className="border p-2 w-full">
+          {predefinedBrands.map(b => <option key={b} value={b}>{b}</option>)}
+          <option value="Other">Other</option>
+        </select>
+        {brand === 'Other' && <input className="border p-2 mt-1 w-full" placeholder="Custom Brand" value={customBrand} onChange={e => setCustomBrand(e.target.value)} />}
+      </div>
+
       <input className="border p-2" placeholder="Size" value={size} onChange={e => setSize(e.target.value)} />
       <input type="number" className="border p-2" placeholder="Cost" value={cost} onChange={e => setCost(Number(e.target.value))} />
       <input type="number" className="border p-2" placeholder="Inventory" value={inventory} onChange={e => setInventory(Number(e.target.value))} />
