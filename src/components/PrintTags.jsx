@@ -29,11 +29,11 @@ const PrintTags = ({ items }) => {
 
   return (
     <div className="mb-4">
-      <button onClick={handlePrint} className="bg-purple-500 text-white p-2 mb-2">Print Tags</button>
+      <button onClick={handlePrint} className="bg-purple-500 text-white p-2">Print Tags</button>
       <div ref={printRef} style={{ display: 'none' }}>
         {items.map(item => (
           <div className="tag" key={item.id}>
-            <div>{item.name}</div>
+            <div>Category: {item.category}</div>
             <div>Brand: {item.brand}</div>
             <div>Cost: ${item.cost}</div>
             {item.photos?.[0] && <img src={item.photos[0]} alt="item" />}
