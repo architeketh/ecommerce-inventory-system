@@ -1,33 +1,91 @@
-import React from 'react'
+import React, { useState } from 'react'
+import JsBarcode from 'jsbarcode'
 
 const InventoryList = ({ items, setItems }) => {
+  const [editId, setEditId] = useState(null)
+  const [editData, setEditData] = useState({})
+
+  const startEdit = item => {
+    setEditId(item.id)
+    setEditData({ ...item })
+  }
+
+  const saveEdit = id => {
+    setItems(items.map(item => (item.id === id ? editData : item)))
+    setEditId(null)
+  }
+
+  const cancelEdit = () => setEditId(null)
+
+  const removeItem = id => setItems(items.filter(item => item.id !== id))
+
+  const toggleSold = id => setItems(items.map(item => item.id === id ? { ...item, sold: !item.sold } : item))
+
+  const duplicateItem = item => {
+    const newItem = { ...item, id: Date.now() }
+    setItems([...items, newItem])
+  }
+
   return (
-    <table className="min-w-full border border-gray-300">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="border px-2 py-1">Barcode</th>
-          <th className="border px-2 py-1">Category</th>
-          <th className="border px-2 py-1">Brand</th>
-          <th className="border px-2 py-1">Description</th>
-          <th className="border px-2 py-1">Price</th>
-          <th className="border px-2 py-1">Quantity</th>
-          <th className="border px-2 py-1">Quantity Sold</th>
-        </tr>
-      </thead>
-      <tbody>
-        {items.map(item => (
-          <tr key={item.id}>
-            <td className="border px-2 py-1">{`abc_isfor_xyz${item.id}`}</td>
-            <td className="border px-2 py-1">{item.category}</td>
-            <td className="border px-2 py-1">{item.brand}</td>
-            <td className="border px-2 py-1">{item.description}</td>
-            <td className="border px-2 py-1">{item.price}</td>
-            <td className="border px-2 py-1">{item.quantity}</td>
-            <td className="border px-2 py-1">{item.quantitySold}</td>
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse border">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="border p-2">Category</th>
+            <th className="border p-2">Brand</th>
+            <th className="border p-2">Description</th>
+            <th className="border p-2">Price</th>
+            <th className="border p-2">Items</th>
+            <th className="border p-2">Sold</th>
+            <th className="border p-2">Image</th>
+            <th className="border p-2">Barcode</th>
+            <th className="border p-2">Actions</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {items.map(item => (
+            <tr key={item.id}>
+              {editId === item.id ? (
+                <>
+                  <td className="border p-2"><input value={editData.category} onChange={e => setEditData({ ...editData, category: e.target.value })} /></td>
+                  <td className="border p-2"><input value={editData.brand} onChange={e => setEditData({ ...editData, brand: e.target.value })} /></td>
+                  <td className="border p-2"><input value={editData.description} onChange={e => setEditData({ ...editData, description: e.target.value })} /></td>
+                  <td className="border p-2"><input type="number" value={editData.cost} onChange={e => setEditData({ ...editData, cost: Number(e.target.value) })} /></td>
+                  <td className="border p-2"><input type="number" value={editData.inventory} onChange={e => setEditData({ ...editData, inventory: Number(e.target.value) })} /></td>
+                  <td className="border p-2"><input type="checkbox" checked={editData.sold} onChange={e => setEditData({ ...editData, sold: e.target.checked })} /></td>
+                  <td className="border p-2">
+                    {editData.photos?.length > 0 && <a href={editData.photos[0]} target="_blank" rel="noopener noreferrer">View Image</a>}
+                  </td>
+                  <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), { format: "CODE128", width: 2, height: 40 })}></svg></td>
+                  <td className="border p-2 flex gap-1">
+                    <button className="bg-green-500 text-white px-2" onClick={() => saveEdit(item.id)}>Save</button>
+                    <button className="bg-gray-500 text-white px-2" onClick={cancelEdit}>Cancel</button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td className="border p-2">{item.category}</td>
+                  <td className="border p-2">{item.brand}</td>
+                  <td className="border p-2">{item.description}</td>
+                  <td className="border p-2">${item.cost}</td>
+                  <td className="border p-2">{item.inventory}</td>
+                  <td className="border p-2"><input type="checkbox" checked={item.sold} onChange={() => toggleSold(item.id)} /></td>
+                  <td className="border p-2">
+                    {item.photos?.length > 0 && <a href={item.photos[0]} target="_blank" rel="noopener noreferrer">View Image</a>}
+                  </td>
+                  <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), { format: "CODE128", width: 2, height: 40 })}></svg></td>
+                  <td className="border p-2 flex gap-1">
+                    <button className="bg-yellow-500 text-white px-2" onClick={() => startEdit(item)}>Edit</button>
+                    <button className="bg-green-600 text-white px-2" onClick={() => duplicateItem(item)}>Duplicate</button>
+                    <button className="bg-red-500 text-white px-2" onClick={() => removeItem(item.id)}>Delete</button>
+                  </td>
+                </>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
