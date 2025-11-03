@@ -16,7 +16,7 @@ const App = () => {
   }, [items])
 
   const itemsToPrint = showSoldOnly
-    ? items.filter(item => item.sold > 0)
+    ? items.filter(item => item.sold)
     : items
 
   return (
