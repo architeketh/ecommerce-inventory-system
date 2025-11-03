@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import JsBarcode from 'jsbarcode'
 
-const PrintTags = ({ items }) => {
+const PrintTags = ({ items, showPhotos = true }) => {
   const printRef = useRef()
 
   const handlePrint = () => {
@@ -36,7 +36,7 @@ const PrintTags = ({ items }) => {
             <div>Category: {item.category}</div>
             <div>Brand: {item.brand}</div>
             <div>Cost: ${item.cost}</div>
-            {item.photos?.[0] && <img src={item.photos[0]} alt="item" />}
+            {showPhotos && item.photos?.[0] && <img src={item.photos[0]} alt="item" />}
             <svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg>
           </div>
         ))}
