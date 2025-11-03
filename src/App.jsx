@@ -1,68 +1,26 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { PlusCircle, Trash2, Camera, Search, Download, Upload, Tag } from 'lucide-react'
-import JsBarcode from 'jsbarcode'
+import React, { useState, useEffect } from 'react'
+import InventoryList from './components/InventoryList.jsx'
+import InventoryForm from './components/InventoryForm.jsx'
+import Dashboard from './components/Dashboard.jsx'
 
+const App = () => {
+  const [items, setItems] = useState(() => {
+    const saved = localStorage.getItem('inventory')
+    return saved ? JSON.parse(saved) : []
+  })
 
-const STORAGE_KEY = 'ecom_inventory_v1'
+  useEffect(() => {
+    localStorage.setItem('inventory', JSON.stringify(items))
+  }, [items])
 
-
-function sampleId() {
-return 'P' + Math.random().toString(36).slice(2, 9).toUpperCase()
+  return (
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">Ecommerce Inventory System</h1>
+      <Dashboard items={items} />
+      <InventoryForm items={items} setItems={setItems} />
+      <InventoryList items={items} setItems={setItems} />
+    </div>
+  )
 }
 
-
-function useLocalStorage(key, initial) {
-const [state, setState] = useState(() => {
-try {
-const raw = localStorage.getItem(key)
-return raw ? JSON.parse(raw) : initial
-} catch (e) {
-console.error(e)
-return initial
-}
-})
-useEffect(() => {
-try {
-localStorage.setItem(key, JSON.stringify(state))
-} catch (e) {
-console.error(e)
-}
-}, [key, state])
-return [state, setState]
-}
-
-
-export default function App() {
-const [items, setItems] = useLocalStorage(STORAGE_KEY, [])
-const [query, setQuery] = useState('')
-const [showLowOnly, setShowLowOnly] = useState(false)
-const [editing, setEditing] = useState(null)
-const [lowThreshold, setLowThreshold] = useState(5)
-const fileInputRef = useRef()
-
-
-useEffect(() => {
-// demo seed when empty
-if (items.length === 0) {
-setItems([
-{ id: sampleId(), name: 'Golf Ball - Pro', qty: 12, price: 4.5, image: null },
-{ id: sampleId(), name: 'Driver 10°', qty: 3, price: 299.99, image: null }
-])
-}
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, [])
-
-
-const addItem = item => setItems(prev => [item, ...prev])
-const updateItem = updated => setItems(prev => prev.map(i => i.id === updated.id ? updated : i))
-const deleteItem = id => setItems(prev => prev.filter(i => i.id !== id))
-
-
-const filtered = items.filter(i => i.name.toLowerCase().includes(query.toLowerCase()))
-.filter(i => showLowOnly ? i.qty <= lowThreshold : true)
-
-
-const stats = {
-totalItems: items.length,
-totalQty: items.reduce((s, i) => s + Number(i.qty || 0), 0),
-totalValue: items.reduce((s, i) => s + (Number(i.qty || 0) * Number(i.price || 0)), 0)
+export default App
