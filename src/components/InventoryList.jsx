@@ -27,8 +27,13 @@ const InventoryList = ({ items, setItems }) => {
   }
 
   const removeItem = id => setItems(items.filter(item => item.id !== id))
-  const toggleItems = id => setItems(items.map(item => item.id === id ? { ...item, forSale: !item.forSale } : item))
+
   const toggleSold = id => setItems(items.map(item => item.id === id ? { ...item, sold: !item.sold } : item))
+
+  const duplicateItem = item => {
+    const newItem = { ...item, id: Date.now() }
+    setItems([...items, newItem])
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -39,7 +44,6 @@ const InventoryList = ({ items, setItems }) => {
             <th className="border p-2">Brand</th>
             <th className="border p-2">Size</th>
             <th className="border p-2">Cost</th>
-            <th className="border p-2">Inventory</th>
             <th className="border p-2">Items</th>
             <th className="border p-2">Sold</th>
             <th className="border p-2">Photos</th>
@@ -57,7 +61,6 @@ const InventoryList = ({ items, setItems }) => {
                   <td className="border p-2"><input value={editData.size} onChange={e => setEditData({...editData, size:e.target.value})} /></td>
                   <td className="border p-2"><input type="number" value={editData.cost} onChange={e => setEditData({...editData, cost:Number(e.target.value)})} /></td>
                   <td className="border p-2"><input type="number" value={editData.inventory} onChange={e => setEditData({...editData, inventory:Number(e.target.value)})} /></td>
-                  <td className="border p-2"><input type="checkbox" checked={editData.forSale} onChange={e => setEditData({...editData, forSale:e.target.checked})} /></td>
                   <td className="border p-2"><input type="checkbox" checked={editData.sold} onChange={e => setEditData({...editData, sold:e.target.checked})} /></td>
                   <td className="border p-2">
                     <input type="file" multiple onChange={handlePhotoUpload} />
@@ -78,12 +81,12 @@ const InventoryList = ({ items, setItems }) => {
                   <td className="border p-2">{item.size}</td>
                   <td className="border p-2">${item.cost}</td>
                   <td className="border p-2">{item.inventory}</td>
-                  <td className="border p-2"><input type="checkbox" checked={item.forSale} onChange={() => toggleItems(item.id)} /></td>
                   <td className="border p-2"><input type="checkbox" checked={item.sold} onChange={() => toggleSold(item.id)} /></td>
                   <td className="border p-2 flex gap-1">{item.photos?.map((p,i)=><img key={i} src={p} alt="item" className="w-12 h-12 object-cover" />)}</td>
                   <td className="border p-2"><svg ref={el => el && JsBarcode(el, String(item.id), {format:"CODE128", width:2, height:40})}></svg></td>
                   <td className="border p-2 flex gap-1">
                     <button className="bg-yellow-500 text-white px-2" onClick={()=>startEdit(item)}>Edit</button>
+                    <button className="bg-green-600 text-white px-2" onClick={()=>duplicateItem(item)}>Duplicate</button>
                     <button className="bg-red-500 text-white px-2" onClick={()=>removeItem(item.id)}>Delete</button>
                   </td>
                 </>
